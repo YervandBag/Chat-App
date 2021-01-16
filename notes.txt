@@ -1,0 +1,3 @@
+APP ID: 28448b38f1fe652
+Rest API Key: c3744e605f6e68f902fe8ec56b363f8fdfe237d3
+GUID: supergroup
