@@ -31,3 +31,62 @@
         </div>
     </div>
 </template>
+
+<script>
+import { CometChat } from "@cometchat-pro/chat";
+
+export default {
+    data() {
+            return {
+                username: "",
+                password: '',
+                showSpinner: false,
+                token: '',
+            };
+        },
+        methods: {
+            authLoginAppUser() {
+                let userData = {
+                    username: this.username,
+                    password: this.password
+                };
+
+                if (this.username && this.password) {
+                    axios.post(`http://localhost:8000/api/login`, userData).then(response => {
+                        this.logUserInToCometChat(response.data.token)
+                    }).catch(error => {
+                        alert(error.response.data.message);
+                        console.log(error.response.data.message);
+                    })
+                } else {
+                    alert('Please check your credentials');
+                }
+            },
+            logUserInToCometChat(token) {
+                this.showSpinner = true;
+                CometChat.login(token).then(
+                    () => {
+                        this.showSpinner = false;
+                        console.log("successfully login user");
+                        this.$router.push({
+                            name: 'chat',
+                            params: {username: this.username, authenticated: true}
+                        });
+                    },
+                    error => {
+                        this.showSpinner = false;
+                        alert("Whops. Something went wrong. This commonly happens when you enter a username that doesn't exist. Check the console for more information");
+                    this.$router.push({
+                        name: 'login',
+                        params: {username: this.username, authenticated: true}
+                    });
+                        console.log("Login failed with error:", error.code);
+                    }
+                );
+            },
+            redirectToRegister() {
+                this.$router.push({name: 'register'});
+            }
+        }
+}
+</script>
